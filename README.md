@@ -21,6 +21,12 @@ Janus 需要与 Blessing Skin Server 使用同一个 MySQL/MariaDB 数据库。�
 
 Janus **不是** 开箱即用的，需要手动构建。部署 Janus 并不难，但最好有一定的运维经验。
 
+## 公共客户端支持
+
+应用无需进行特殊设置，即可使用 Janus 通过 Authorization Code Grant 配合 Client Secret 获取 Access Token 和 ID Token。
+
+但若要使用 Device Authorization Grant 等公共客户端使用的授权方式，则需要在应用设置中为应用启用公共客户端支持。请查看 [Wiki - 为应用启用公共客户端支持](https://github.com/bs-community/janus/wiki/%E4%B8%BA%E5%BA%94%E7%94%A8%E5%90%AF%E7%94%A8%E5%85%AC%E5%85%B1%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%AF%E6%8C%81)。
+
 ## 版权信息
 
 Copyright 2025-present Blessing Skin Team. All rights reserved. Open source under the MIT license.
