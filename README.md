@@ -8,8 +8,7 @@ Janus 需要与 Blessing Skin Server 使用同一个 MySQL/MariaDB 数据库。�
 
 ## 环境需求
 
-- Node.js >= 22
-    - 更低版本或许也可以，但未经测试
+- Node.js >= 22.12.0
 - Blessing Skin Server >= 6
     - 需要安装 [Yggdrasil Connect](https://github.com/bs-community/blessing-skin-plugins/blob/master/plugins/yggdrasil-connect) 插件，可在插件市场中下载
         - 该插件不需要也不可以与原版 Yggdrasil API 插件同时启用，但插件数据可以通用
