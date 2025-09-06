@@ -3,308 +3,187 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     url      = env("DB_CONNECTION_STRING")
 }
 
 model CodeIdToUUID {
-    id         Int              @id @default(autoincrement()) @db.UnsignedInt
-    code_id    String           @unique(map: "code_id_to_uuid_code_id_unique") @db.VarChar(255)
-    uuid       String           @db.VarChar(255)
-    created_at DateTime         @default(now()) @db.Timestamp(0)
-    code       PassportAuthCode @relation(fields: [code_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "code_id_to_uuid_code_id_foreign")
+    id         Int              @id @default(autoincrement())
+    code_id    String           @unique
+    uuid       String
+    created_at DateTime         @default(now())
+    code       PassportAuthCode @relation(fields: [code_id], references: [id], onDelete: Cascade)
 
     @@map("code_id_to_uuid")
 }
 
 model PassportAccessToken {
-    id         String    @id @db.VarChar(100)
-    user_id    BigInt?   @db.UnsignedBigInt
-    client_id  BigInt    @db.UnsignedBigInt
-    name       String?   @db.VarChar(255)
-    scopes     String?   @db.Text
+    id         String   @id
+    user_id    BigInt?
+    client_id  BigInt
+    name       String?
+    scopes     String?
     revoked    Boolean
-    created_at DateTime? @db.Timestamp(0)
-    updated_at DateTime? @db.Timestamp(0)
-    expires_at DateTime? @db.DateTime(0)
+    created_at DateTime?
+    updated_at DateTime?
+    expires_at DateTime?
 
-    @@index([user_id], map: "oauth_access_tokens_user_id_index")
+    @@index([user_id])
     @@map("oauth_access_tokens")
 }
 
 model PassportAuthCode {
-    id           String        @id @db.VarChar(100)
-    user_id      BigInt        @db.UnsignedBigInt
-    client_id    BigInt        @db.UnsignedBigInt
-    scopes       String?       @db.Text
+    id           String        @id
+    user_id      BigInt
+    client_id    BigInt
+    scopes       String?
     revoked      Boolean
-    expires_at   DateTime?     @db.DateTime(0)
+    expires_at   DateTime?
     CodeIdToUUID CodeIdToUUID?
 
-    @@index([user_id], map: "oauth_auth_codes_user_id_index")
+    @@index([user_id])
     @@map("oauth_auth_codes")
 }
 
 model PassportRefreshToken {
-    id              String    @id @db.VarChar(100)
-    access_token_id String    @db.VarChar(100)
+    id              String   @id
+    access_token_id String
     revoked         Boolean
-    expires_at      DateTime? @db.DateTime(0)
+    expires_at      DateTime?
 
-    @@index([access_token_id], map: "oauth_refresh_tokens_access_token_id_index")
+    @@index([access_token_id])
     @@map("oauth_refresh_tokens")
 }
 
 model Client {
-    id                     BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-    user_id                BigInt?   @db.UnsignedBigInt
-    client_name            String    @map("name") @db.VarChar(255)
-    client_secret          String?   @map("secret") @db.VarChar(100)
-    provider               String?   @db.VarChar(255)
-    redirect               String    @db.Text
+    id                     BigInt    @id @default(autoincrement())
+    user_id                BigInt?
+    client_name            String    @map("name")
+    client_secret          String?   @map("secret")
+    provider               String?
+    redirect               String
     personal_access_client Boolean
     password_client        Boolean
     revoked                Boolean
-    created_at             DateTime? @db.Timestamp(0)
-    updated_at             DateTime? @db.Timestamp(0)
+    created_at             DateTime?
+    updated_at             DateTime?
 
-    @@index([user_id], map: "oauth_clients_user_id_index")
+    @@index([user_id])
     @@map("oauth_clients")
 }
 
 model Option {
-    id    Int    @id @default(autoincrement()) @db.UnsignedInt
-    name  String @map("option_name") @db.VarChar(50)
-    value String @map("option_value") @db.LongText
+    id    Int    @id @default(autoincrement())
+    name  String @map("option_name")
+    value String @map("option_value")
 
     @@map("options")
 }
 
 model Player {
-    pid           Int      @id @default(autoincrement()) @db.UnsignedInt
+    pid           Int      @id @default(autoincrement())
     uid           Int
-    name          String   @db.VarChar(50)
+    name          String
     tid_cape      Int      @default(0)
-    last_modified DateTime @db.DateTime(0)
+    last_modified DateTime
     tid_skin      Int      @default(-1)
-    uuid          UUID?
+    uuid          String?
 
     @@map("players")
 }
 
-model reports {
-    id        Int      @id @default(autoincrement()) @db.UnsignedInt
-    tid       Int
-    uploader  Int
-    reporter  Int
-    reason    String   @db.LongText
-    status    Int
-    report_at DateTime @db.DateTime(0)
-
-    @@map("reports")
-    @@ignore
-}
-
-model scopes {
-    id          Int    @id @default(autoincrement()) @db.UnsignedInt
-    name        String @unique(map: "scopes_name_unique") @db.VarChar(255)
-    description String @db.VarChar(255)
-
-    @@map("scopes")
-    @@ignore
-}
-
 model User {
-    uid                Int      @id @default(autoincrement()) @db.UnsignedInt
-    email              String   @db.VarChar(100)
-    nickname           String   @default("") @db.VarChar(50)
-    locale             String?  @db.VarChar(255)
+    uid                Int      @id @default(autoincrement())
+    email              String
+    nickname           String   @default("")
+    locale             String?
     score              Int
     avatar             Int      @default(0)
-    password           String   @db.VarChar(255)
-    ip                 String   @db.VarChar(45)
+    password           String
+    ip                 String
     is_dark_mode       Boolean  @default(false)
     permission         Int      @default(0)
-    last_sign_at       DateTime @db.DateTime(0)
-    register_at        DateTime @db.DateTime(0)
+    last_sign_at       DateTime
+    register_at        DateTime
     verified           Boolean  @default(false)
-    verification_token String   @default("") @db.VarChar(255)
-    remember_token     String?  @db.VarChar(100)
+    verification_token String   @default("")
+    remember_token     String?
 
     @@map("users")
 }
 
 model UUID {
-    id         Int       @id @default(autoincrement()) @db.UnsignedInt
-    pid        Int?      @unique(map: "uuid_pid_unique") @db.UnsignedInt
-    name       String    @unique(map: "uuid_name_unique") @db.VarChar(255)
-    uuid       String    @unique(map: "uuid_uuid_unique") @db.VarChar(255)
-    created_at DateTime? @db.Timestamp(0)
-    updated_at DateTime? @db.Timestamp(0)
-    player     Player?   @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: NoAction, map: "uuid_pid_foreign")
+    id         Int       @id @default(autoincrement())
+    pid        Int?      @unique
+    name       String    @unique
+    uuid       String    @unique
+    created_at DateTime?
+    updated_at DateTime?
+    player     Player?   @relation(fields: [pid], references: [pid], onDelete: Cascade)
 
     @@map("uuid")
 }
 
 model AuthorizationCode {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
-    uid        String?  @unique @db.VarChar(255)
+    uid        String?  @unique
     consumed   Boolean  @default(false)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_authorization_codes")
 }
 
 model DeviceCode {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
     userCode   String?
-    uid        String?  @unique @db.VarChar(255)
+    uid        String?  @unique
     consumed   Boolean  @default(false)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_device_codes")
 }
 
 model RefreshToken {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
-    uid        String?  @unique @db.VarChar(255)
+    uid        String?  @unique
     consumed   Boolean  @default(false)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_refresh_tokens")
 }
 
 model Grant {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
-    uid        String?  @unique @db.VarChar(255)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    uid        String?  @unique
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_grants")
 }
 
 model Interaction {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
-    uid        String?  @unique @db.VarChar(255)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    uid        String?  @unique
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_interactions")
 }
 
 model Session {
-    id         String   @id @unique @db.VarChar(255)
+    id         String   @id
     payload    Json
-    uid        String?  @unique @db.VarChar(255)
-    created_at DateTime @default(now()) @db.Timestamp(0)
+    uid        String?  @unique
+    created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
     @@map("yggc_sessions")
-}
-
-model jobs {
-    id           BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-    queue        String @db.VarChar(255)
-    payload      String @db.LongText
-    attempts     Int    @db.UnsignedTinyInt
-    reserved_at  Int?   @db.UnsignedInt
-    available_at Int    @db.UnsignedInt
-    created_at   Int    @db.UnsignedInt
-
-    @@index([queue], map: "jobs_queue_index")
-    @@map("jobs")
-    @@ignore
-}
-
-model language_lines {
-    id         Int       @id @default(autoincrement()) @db.UnsignedInt
-    group      String    @db.VarChar(255)
-    key        String    @db.VarChar(255)
-    text       String    @db.Text
-    created_at DateTime? @db.Timestamp(0)
-    updated_at DateTime? @db.Timestamp(0)
-
-    @@index([group], map: "language_lines_group_index")
-    @@map("language_lines")
-    @@ignore
-}
-
-model migrations {
-    id        Int    @id @default(autoincrement()) @db.UnsignedInt
-    migration String @db.VarChar(255)
-    batch     Int
-
-    @@map("migrations")
-    @@ignore
-}
-
-model notifications {
-    id              String    @id @db.Char(36)
-    type            String    @db.VarChar(255)
-    notifiable_type String    @db.VarChar(255)
-    notifiable_id   BigInt    @db.UnsignedBigInt
-    data            String    @db.Text
-    read_at         DateTime? @db.Timestamp(0)
-    created_at      DateTime? @db.Timestamp(0)
-    updated_at      DateTime? @db.Timestamp(0)
-
-    @@index([notifiable_type, notifiable_id], map: "notifications_notifiable_type_notifiable_id_index")
-    @@map("notifications")
-    @@ignore
-}
-
-model ygg_log {
-    id         Int      @id @default(autoincrement()) @db.UnsignedInt
-    action     String   @db.VarChar(255)
-    user_id    Int
-    player_id  Int
-    parameters String   @default("") @db.VarChar(2048)
-    ip         String   @default("") @db.VarChar(255)
-    time       DateTime @db.DateTime(0)
-
-    @@map("ygg_log")
-    @@ignore
-}
-
-model oauth_personal_access_clients {
-    id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-    client_id  BigInt    @db.UnsignedBigInt
-    created_at DateTime? @db.Timestamp(0)
-    updated_at DateTime? @db.Timestamp(0)
-
-    @@map("oauth_personal_access_clients")
-    @@ignore
-}
-
-model textures {
-    tid       Int      @id @default(autoincrement()) @db.UnsignedInt
-    name      String   @db.VarChar(50)
-    type      String   @db.VarChar(10)
-    hash      String   @db.VarChar(64)
-    size      Int
-    uploader  Int
-    public    Int      @db.TinyInt
-    upload_at DateTime @db.DateTime(0)
-    likes     Int      @default(0) @db.UnsignedInt
-
-    @@map("textures")
-    @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model user_closet {
-    user_uid    Int
-    texture_tid Int
-    item_name   String? @db.Text
-
-    @@map("user_closet")
-    @@ignore
 }
