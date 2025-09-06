@@ -4,7 +4,9 @@ Janus 是 [Blessing Skin Server](https://github.com/bs-community/blessing-skin-s
 
 由于 Laravel 框架缺乏合适的 OpenID Connect 服务端扩展包，故采取这种外挂 OpenID Connect 服务端的方式为 Blessing Skin Server 实现 Yggdrasil Connect。
 
-Janus 需要与 Blessing Skin Server 使用同一个 MySQL/MariaDB 数据库。不支持 PostgreSQL 和 SQLite 数据库。
+~~Janus 需要与 Blessing Skin Server 使用同一个 MySQL/MariaDB 数据库。不支持 PostgreSQL 和 SQLite 数据库。~~
+
+本Fork支持也仅支持PostgreSQl数据库
 
 ## 环境需求
 
