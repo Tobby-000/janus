@@ -33,3 +33,5 @@ Janus **不是** 开箱即用的，需要手动构建。部署 Janus 并不难�
 Copyright 2025-present Blessing Skin Team. All rights reserved. Open source under the MIT license.
 
 _Disclaimer：某站产品经理自己写代码的原则就是代码和人有一个能跑就行，自然有些代码很粗糙很难看很低效。如果你看着哪里的代码不爽，欢迎直接重构并 PR。_
+
+_来自Fork: 本Fork仅供学习,可能存在bug,本人能力有限,相信我,程序出问题了我跑的比程序快._
